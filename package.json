@@ -1,0 +1,23 @@
+{
+  "name": "com.alianblank.gameframex.event",
+  "displayName": "Game Frame X Event",
+  "category": "Game Framework X",
+  "description": "Game Frame X Event Component",
+  "version": "1.0.0",
+  "unity": "2017.1",
+  "keywords": [
+    "Game Framework X"
+  ],
+  "repository": {
+    "name": "com.alianblank.gameframex.event",
+    "url": "https://github.com/AlianBlank/com.alianblank.gameframex.unity.event.git",
+    "type": "git"
+  },
+  "author": {
+    "name": "Blank",
+    "email": "alianblank@outlook.com",
+    "url": "https://alianblank.com/"
+  },
+  "dependencies": {
+  }
+}
