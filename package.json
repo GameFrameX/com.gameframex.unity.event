@@ -1,5 +1,5 @@
 {
-  "name": "com.alianblank.gameframex.event",
+  "name": "com.alianblank.gameframex.unity.event",
   "displayName": "Game Frame X Event",
   "category": "Game Framework X",
   "description": "Game Frame X Event Component",
@@ -9,7 +9,7 @@
     "Game Framework X"
   ],
   "repository": {
-    "name": "com.alianblank.gameframex.event",
+    "name": "com.alianblank.gameframex.unity.event",
     "url": "https://github.com/AlianBlank/com.alianblank.gameframex.unity.event.git",
     "type": "git"
   },

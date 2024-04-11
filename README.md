@@ -66,7 +66,7 @@ EventComponent 类是一个游戏事件系统的组件，用于管理游戏事�
 
 1. 直接在 `manifest.json` 的文件中的 `dependencies` 节点下添加以下内容
    ```json
-      {"com.alianblank.gameframex.event": "https://github.com/AlianBlank/com.alianblank.gameframex.unity.event.git"}
+      {"com.alianblank.gameframex.unity.event": "https://github.com/AlianBlank/com.alianblank.gameframex.unity.event.git"}
     ```
 2. 在Unity 的`Packages Manager` 中使用`Git URL` 的方式添加库,地址为：https://github.com/AlianBlank/com.alianblank.gameframex.unity.event.git
 
