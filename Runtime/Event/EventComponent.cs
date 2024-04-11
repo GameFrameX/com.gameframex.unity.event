@@ -41,8 +41,9 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         protected override void Awake()
         {
+            ImplementationComponentType = Type.GetType(componentType);
+            InterfaceComponentType = typeof(IEventManager);
             base.Awake();
-            new EventManager();
             m_EventManager = GameFrameworkEntry.GetModule<IEventManager>();
             if (m_EventManager == null)
             {

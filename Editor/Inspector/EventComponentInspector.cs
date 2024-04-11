@@ -12,7 +12,7 @@ using UnityEditor;
 namespace GameFrameX.Event.Editor
 {
     [CustomEditor(typeof(EventComponent))]
-    internal sealed class EventComponentInspector : GameFrameworkInspector
+    internal sealed class EventComponentInspector : ComponentTypeComponentInspector
     {
         public override void OnInspectorGUI()
         {
@@ -33,6 +33,11 @@ namespace GameFrameX.Event.Editor
             }
 
             Repaint();
+        }
+
+        protected override void RefreshTypeNames()
+        {
+            RefreshComponentTypeNames(typeof(IEventManager));
         }
     }
 }

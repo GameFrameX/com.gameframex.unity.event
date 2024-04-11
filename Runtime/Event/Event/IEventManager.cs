@@ -12,7 +12,7 @@ namespace GameFrameX.Event.Runtime
     /// <summary>
     /// 事件管理器接口。
     /// </summary>
-    internal interface IEventManager
+    public interface IEventManager
     {
         /// <summary>
         /// 获取事件处理函数的数量。
