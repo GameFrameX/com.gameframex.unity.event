@@ -74,6 +74,19 @@ namespace GameFrameX.Event.Runtime
         }
 
         /// <summary>
+        /// 检查订阅事件处理回调函数。当不存在时自动订阅
+        /// </summary>
+        /// <param name="id">事件类型编号。</param>
+        /// <param name="handler">要订阅的事件处理回调函数。</param>
+        public void CheckSubscribe(string id, EventHandler<GameEventArgs> handler)
+        {
+            if (!Check(id, handler))
+            {
+                m_EventManager.Subscribe(id, handler);
+            }
+        }
+
+        /// <summary>
         /// 订阅事件处理回调函数。
         /// </summary>
         /// <param name="id">事件类型编号。</param>
