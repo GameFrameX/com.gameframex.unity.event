@@ -12,6 +12,7 @@ namespace GameFrameX.Event.Runtime
     /// <summary>
     /// 事件管理器接口。
     /// </summary>
+    [UnityEngine.Scripting.Preserve]
     public interface IEventManager
     {
         /// <summary>

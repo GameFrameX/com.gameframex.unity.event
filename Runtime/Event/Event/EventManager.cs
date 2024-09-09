@@ -12,6 +12,7 @@ namespace GameFrameX.Event.Runtime
     /// <summary>
     /// 事件管理器。
     /// </summary>
+    [UnityEngine.Scripting.Preserve]
     public sealed class EventManager : GameFrameworkModule, IEventManager
     {
         private readonly EventPool<GameEventArgs> m_EventPool;
@@ -29,10 +30,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         public int EventHandlerCount
         {
-            get
-            {
-                return m_EventPool.EventHandlerCount;
-            }
+            get { return m_EventPool.EventHandlerCount; }
         }
 
         /// <summary>
@@ -40,10 +38,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         public int EventCount
         {
-            get
-            {
-                return m_EventPool.EventCount;
-            }
+            get { return m_EventPool.EventCount; }
         }
 
         /// <summary>
@@ -52,10 +47,7 @@ namespace GameFrameX.Event.Runtime
         /// <remarks>优先级较高的模块会优先轮询，并且关闭操作会后进行。</remarks>
         protected override int Priority
         {
-            get
-            {
-                return 7;
-            }
+            get { return 7; }
         }
 
         /// <summary>

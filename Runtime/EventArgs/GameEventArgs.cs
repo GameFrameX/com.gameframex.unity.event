@@ -10,6 +10,7 @@ namespace GameFrameX.Event.Runtime
     /// <summary>
     /// 游戏逻辑事件基类。
     /// </summary>
+    [UnityEngine.Scripting.Preserve]
     public abstract class GameEventArgs : BaseEventArgs
     {
     }
