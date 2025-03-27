@@ -104,6 +104,11 @@ namespace GameFrameX.Event.Runtime
         /// <param name="handler">要取消订阅的事件处理回调函数。</param>
         public void Unsubscribe(string id, EventHandler<GameEventArgs> handler)
         {
+            if (!Check(id, handler))
+            {
+                return;
+            }
+
             m_EventManager.Unsubscribe(id, handler);
         }
 
