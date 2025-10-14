@@ -13,7 +13,7 @@ namespace GameFrameX.Event.Runtime
     /// </summary>
     public sealed class EmptyEventArgs : GameEventArgs
     {
-        private static string _eventId = typeof(EmptyEventArgs).FullName;
+        private string _eventId = typeof(EmptyEventArgs).FullName;
 
         public override void Clear()
         {
