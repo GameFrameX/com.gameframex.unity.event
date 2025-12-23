@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.0.6...1.1.0) (2025-12-23)
+
+
+### Features
+
+* **ci:** change ci ([40fd4cb](https://github.com/gameframex/com.gameframex.unity.event/commit/40fd4cb2464cfd29f891a7a71dbbdb32394452f6))
+
 # Changelog
 
 ## [1.0.6](https://github.com/GameFrameX/com.gameframex.unity.event/tree/1.0.6) (2025-06-01)
