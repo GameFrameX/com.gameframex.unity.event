@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/gameframex/com.gameframex.unity.event/compare/1.1.0...1.1.1) (2026-05-28)
+
+
+### Bug Fixes
+
+* **ci:** 统一 .github 工作流配置 ([a7031c4](https://github.com/gameframex/com.gameframex.unity.event/commit/a7031c4030bbbc6a5a3cf4152d6233ff463c59a1))
+
 # [1.1.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.0.6...1.1.0) (2025-12-23)
 
 
