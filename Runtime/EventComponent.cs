@@ -15,7 +15,7 @@ namespace GameFrameX.Event.Runtime
     /// 事件组件。
     /// </summary>
     [DisallowMultipleComponent]
-    [AddComponentMenu("Game Framework/Event")]
+    [AddComponentMenu("GameFrameX/Event")]
     [UnityEngine.Scripting.Preserve]
     public sealed class EventComponent : GameFrameworkComponent
     {
