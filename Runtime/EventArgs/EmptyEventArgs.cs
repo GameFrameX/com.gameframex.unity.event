@@ -17,6 +17,7 @@ namespace GameFrameX.Event.Runtime
 
         public override void Clear()
         {
+            _eventId = typeof(EmptyEventArgs).FullName;
         }
 
         public override string Id
