@@ -18,74 +18,139 @@
 
 ---
 
-## 项目简介
+## 概述
 
-**Event 游戏事件系统组件 (Event Component)** - 提供游戏事件系统的组件相关的接口，管理游戏事件的订阅与派发。
+基于字符串 ID 的事件总线。支持线程安全的延迟分发（`Fire` — 下一帧主线程回调）和立即分发（`FireNow`），可设置默认处理器兜底未订阅事件。
 
 ### 功能
 
-- **事件订阅与取消订阅：** 允许根据事件ID来订阅或取消订阅事件处理回调函数。
-- **事件派发：** 提供线程安全的事件派发方法 `Fire`，即使在非主线程也能保证在主线程回调事件处理函数，以及立即派发的方法 `FireNow`。
-- **处理函数统计：** 可以获取当前已订阅的事件处理函数数量和事件数量。
-- **默认事件处理函数设置：** 允许设置默认事件处理函数来捕获未明确订阅的事件。
+- 基于字符串 ID 的事件订阅 / 取消订阅
+- `Fire` — 线程安全的延迟分发（下一帧主线程回调）
+- `FireNow` — 立即同步分发
+- `Fire(sender, eventId)` — 无需自定义事件参数的快捷方式
+- `Check` / `CheckSubscribe` — 检查存在性或不存在时自动订阅
+- `Count` / `EventHandlerCount` / `EventCount` — 处理函数统计
+- 默认处理器兜底未订阅事件
 
 ## 快速开始
 
 ### 安装方式（任选其一）
 
-1. 直接在 `manifest.json` 的 `dependencies` 节点下添加以下内容：
+1. 编辑 Unity 项目的 `Packages/manifest.json`，添加 `scopedRegistries` 部分：
+   ```json
+   {
+     "scopedRegistries": [
+       {
+         "name": "GameFrameX",
+         "url": "https://gameframex.upm.alianblank.uk",
+         "scopes": [
+           "com.gameframex"
+         ]
+       }
+     ],
+     "dependencies": {
+       "com.gameframex.unity.event": "1.1.1"
+     }
+   }
+   ```
+
+   `scopes` 控制哪些包通过此注册表解析。只有以 `com.gameframex` 开头的包才会从这个注册表获取。
+
+2. 直接在 `manifest.json` 的 `dependencies` 节点下添加以下内容：
    ```json
    {
       "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
    }
    ```
-2. 在 Unity 的 `Packages Manager` 中使用 `Git URL` 的方式添加库，地址为：`https://github.com/AlianBlank/com.gameframex.unity.event.git`
-3. 直接下载仓库放置到 Unity 项目的 `Packages` 目录下，会自动加载识别。
+3. 在 Unity 的 `Packages Manager` 中使用 `Git URL` 的方式添加库，地址为：`https://github.com/AlianBlank/com.gameframex.unity.event.git`
+4. 直接下载仓库放置到 Unity 项目的 `Packages` 目录下，会自动加载识别。
 
 ## 使用示例
 
-### 获取事件数量和处理函数数量
+### 定义自定义事件
 
 ```csharp
-int eventHandlerCount = eventComponent.EventHandlerCount;
-int eventCount = eventComponent.EventCount;
+public class LevelUpEventArgs : GameEventArgs
+{
+    public override string Id => "level_up";
+    public int Level { get; private set; }
+
+    public static LevelUpEventArgs Create(int level)
+    {
+        var args = ReferencePool.Acquire<LevelUpEventArgs>();
+        args.Level = level;
+        return args;
+    }
+
+    public override void Clear()
+    {
+        base.Clear();
+        Level = 0;
+    }
+}
 ```
 
-### 订阅事件
+### 订阅 / 取消订阅
 
 ```csharp
-eventComponent.Subscribe("game_start", OnGameStart);
+eventComponent.Subscribe("level_up", OnLevelUp);
+eventComponent.Unsubscribe("level_up", OnLevelUp);
+
+void OnLevelUp(object sender, GameEventArgs e)
+{
+    var args = (LevelUpEventArgs)e;
+    Debug.Log($"升级到 {args.Level} 级");
+}
 ```
 
-其中 `OnGameStart` 是遵循 `EventHandler<GameEventArgs>` 委托的方法。
-
-### 取消订阅事件
+### 检查 / 检查并订阅
 
 ```csharp
-eventComponent.Unsubscribe("game_start", OnGameStart);
+// 检查是否已订阅
+bool exists = eventComponent.Check("level_up", OnLevelUp);
+
+// 不存在时自动订阅
+eventComponent.CheckSubscribe("level_up", OnLevelUp);
 ```
 
 ### 抛出事件
 
-线程安全方式（下一帧分发）：
+延迟模式（线程安全，下一帧主线程回调）：
 
 ```csharp
-eventComponent.Fire(this, new GameEventArgs());
+eventComponent.Fire(this, LevelUpEventArgs.Create(5));
 ```
 
-立即模式（立刻分发）：
+立即模式（立刻分发，仅限主线程）：
 
 ```csharp
-eventComponent.FireNow(this, new GameEventArgs());
+eventComponent.FireNow(this, LevelUpEventArgs.Create(5));
 ```
 
-### 设置默认事件处理函数
+快捷方式（无需自定义事件参数）：
+
+```csharp
+eventComponent.Fire(this, "level_up");
+```
+
+### 默认处理器
 
 ```csharp
 eventComponent.SetDefaultHandler(OnDefaultEvent);
+
+void OnDefaultEvent(object sender, GameEventArgs e)
+{
+    Debug.Log($"未处理的事件: {e.Id}");
+}
 ```
 
-其中 `OnDefaultEvent` 是遵循 `EventHandler<GameEventArgs>` 委托的方法。
+### 统计信息
+
+```csharp
+int totalHandlers = eventComponent.EventHandlerCount;
+int totalEvents = eventComponent.EventCount;
+int handlersForEvent = eventComponent.Count("level_up");
+```
 
 ## 文档与资源
 
@@ -101,4 +166,4 @@ eventComponent.SetDefaultHandler(OnDefaultEvent);
 
 ## 开源协议
 
-本项目基于 [MIT 协议](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE) 开源。
+本项目基于 [Apache License 2.0 协议](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE) 开源。

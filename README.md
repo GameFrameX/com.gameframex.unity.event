@@ -2,7 +2,7 @@
 
 <img src="https://download.alianblank.com/gameframex/gameframex_logo_320.png" alt="GameFrameX Logo" width="160"/>
 
-# Game Frame X Event Component
+# Game Frame X Event
 
 [![License](https://img.shields.io/github/license/gameframex/com.gameframex.unity.event)](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE)
 [![Version](https://img.shields.io/github/v/release/gameframex/com.gameframex.unity.event)](https://github.com/gameframex/com.gameframex.unity.event/releases)
@@ -12,22 +12,25 @@ All-in-One Solution for Indie Game Development · Empowering Indie Developers' D
 
 [Documentation](https://gameframex.doc.alianblank.com) · [Quick Start](#quick-start) · [QQ Group](https://qm.qq.com/q/5kbDVBdUeS) · **Language**
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
+**English** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
 </div>
 
 ---
 
-## Project Overview
+## Overview
 
-The **Event Component** provides interfaces for a game event system, managing event subscription and dispatch.
+Type-identified event bus for Unity. Subscribe handlers by string ID, dispatch thread-safely from any thread (`Fire` — next frame on main thread) or immediately (`FireNow`), and set a default handler for unhandled events.
 
 ### Features
 
-- **Event Subscription and Unsubscription:** Subscribe or unsubscribe event handler callbacks by event ID.
-- **Event Dispatch:** Thread-safe dispatch method `Fire` (guaranteed to invoke on the main thread) and immediate dispatch method `FireNow`.
-- **Handler Statistics:** Get the current count of subscribed event handlers and events.
-- **Default Handler:** Set a default event handler to capture events that are not explicitly subscribed.
+- Subscribe / unsubscribe by string event ID
+- `Fire` — thread-safe deferred dispatch (next frame, main thread)
+- `FireNow` — immediate synchronous dispatch
+- `Fire(sender, eventId)` — shorthand without custom event args
+- `Check` / `CheckSubscribe` — check existence or subscribe-if-absent
+- `Count` / `EventHandlerCount` / `EventCount` — handler statistics
+- Default handler fallback for unhandled events
 
 ## Quick Start
 
@@ -35,65 +38,127 @@ The **Event Component** provides interfaces for a game event system, managing ev
 
 Choose one of the following methods:
 
-1. Add to `manifest.json` dependencies:
+1. Edit your Unity project's `Packages/manifest.json` and add the `scopedRegistries` section:
+   ```json
+   {
+     "scopedRegistries": [
+       {
+         "name": "GameFrameX",
+         "url": "https://gameframex.upm.alianblank.uk",
+         "scopes": [
+           "com.gameframex"
+         ]
+       }
+     ],
+     "dependencies": {
+       "com.gameframex.unity.event": "1.1.1"
+     }
+   }
+   ```
+
+   `scopes` controls which packages are resolved through this registry. Only packages whose names start with `com.gameframex` will be fetched from it.
+
+2. Add to `manifest.json` dependencies:
    ```json
    {
       "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
    }
    ```
-2. Use **Packages Manager** in Unity with **Git URL**: `https://github.com/AlianBlank/com.gameframex.unity.event.git`
-3. Clone the repository into your Unity project's `Packages` directory. It will be loaded automatically.
+3. Use **Packages Manager** in Unity with **Git URL**: `https://github.com/AlianBlank/com.gameframex.unity.event.git`
+4. Clone the repository into your Unity project's `Packages` directory. It will be loaded automatically.
 
-## Usage Examples
+## Usage
 
-### Get Event and Handler Count
+### Define a Custom Event
 
 ```csharp
-int eventHandlerCount = eventComponent.EventHandlerCount;
-int eventCount = eventComponent.EventCount;
+public class LevelUpEventArgs : GameEventArgs
+{
+    public override string Id => "level_up";
+    public int Level { get; private set; }
+
+    public static LevelUpEventArgs Create(int level)
+    {
+        var args = ReferencePool.Acquire<LevelUpEventArgs>();
+        args.Level = level;
+        return args;
+    }
+
+    public override void Clear()
+    {
+        base.Clear();
+        Level = 0;
+    }
+}
 ```
 
-### Subscribe to an Event
+### Subscribe / Unsubscribe
 
 ```csharp
-eventComponent.Subscribe("game_start", OnGameStart);
+eventComponent.Subscribe("level_up", OnLevelUp);
+eventComponent.Unsubscribe("level_up", OnLevelUp);
+
+void OnLevelUp(object sender, GameEventArgs e)
+{
+    var args = (LevelUpEventArgs)e;
+    Debug.Log($"Level up to {args.Level}");
+}
 ```
 
-Where `OnGameStart` is a method following the `EventHandler<GameEventArgs>` delegate.
-
-### Unsubscribe from an Event
+### Check / CheckSubscribe
 
 ```csharp
-eventComponent.Unsubscribe("game_start", OnGameStart);
+// Check if a handler is already subscribed
+bool exists = eventComponent.Check("level_up", OnLevelUp);
+
+// Subscribe only if not already subscribed
+eventComponent.CheckSubscribe("level_up", OnLevelUp);
 ```
 
 ### Fire an Event
 
-Thread-safe (dispatched next frame):
+Deferred (thread-safe, dispatched next frame on main thread):
 
 ```csharp
-eventComponent.Fire(this, new GameEventArgs());
+eventComponent.Fire(this, LevelUpEventArgs.Create(5));
 ```
 
-Immediate (dispatched immediately):
+Immediate (dispatched right away, main thread only):
 
 ```csharp
-eventComponent.FireNow(this, new GameEventArgs());
+eventComponent.FireNow(this, LevelUpEventArgs.Create(5));
 ```
 
-### Set Default Handler
+Shorthand without custom event args:
+
+```csharp
+eventComponent.Fire(this, "level_up");
+```
+
+### Default Handler
 
 ```csharp
 eventComponent.SetDefaultHandler(OnDefaultEvent);
+
+void OnDefaultEvent(object sender, GameEventArgs e)
+{
+    Debug.Log($"Unhandled event: {e.Id}");
+}
 ```
 
-Where `OnDefaultEvent` is a method following the `EventHandler<GameEventArgs>` delegate.
+### Statistics
 
-## Documentation & Resources
+```csharp
+int totalHandlers = eventComponent.EventHandlerCount;
+int totalEvents = eventComponent.EventCount;
+int handlersForEvent = eventComponent.Count("level_up");
+```
+
+## Documentation
 
 - [Documentation](https://gameframex.doc.alianblank.com)
 
-## Community & Support
+## Community
 
 - [QQ Group](https://qm.qq.com/q/5kbDVBdUeS)
 
@@ -103,4 +168,4 @@ See [Releases](https://github.com/gameframex/com.gameframex.unity.event/releases
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE).
+This project is licensed under the [Apache License 2.0](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE).

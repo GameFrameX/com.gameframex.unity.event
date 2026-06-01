@@ -18,74 +18,139 @@
 
 ---
 
-## 프로젝트 개요
+## 개요
 
-**Event 게임 이벤트 시스템 컴포넌트 (Event Component)** - 게임 이벤트 구독 및 디스패치를 관리하는 인터페이스를 제공합니다.
+문자열 ID 기반 이벤트 버스. 스레드 안전한 지연 디스패치(`Fire` — 다음 프레임 메인 스레드 콜백)와 즉시 디스패치(`FireNow`)를 지원하며, 구독되지 않은 이벤트에 대한 기본 핸들러를 설정할 수 있습니다.
 
 ### 기능
 
-- **이벤트 구독 및 구독 해제:** 이벤트 ID를 기반으로 이벤트 핸들러 콜백을 구독하거나 구독 해제합니다.
-- **이벤트 디스패치:** 스레드 안전한 디스패치 메서드 `Fire` (메인 스레드에서 콜백 보장)와 즉시 디스패치 메서드 `FireNow`를 제공합니다.
-- **핸들러 통계:** 현재 구독된 이벤트 핸들러 수와 이벤트 수를 가져옵니다.
-- **기본 핸들러:** 명시적으로 구독되지 않은 이벤트를 캡처하는 기본 이벤트 핸들러를 설정합니다.
+- 문자열 ID 기반 이벤트 구독 / 구독 해제
+- `Fire` — 스레드 안전한 지연 디스패치 (다음 프레임, 메인 스레드)
+- `FireNow` — 즉시 동기 디스패치
+- `Fire(sender, eventId)` — 커스텀 이벤트 인수 없이 사용하는 단축 방식
+- `Check` / `CheckSubscribe` — 존재 확인 또는 미등록 시 자동 구독
+- `Count` / `EventHandlerCount` / `EventCount` — 핸들러 통계
+- 구독되지 않은 이벤트에 대한 기본 핸들러 폴백
 
 ## 빠른 시작
 
 ### 설치 방법 (선택)
 
-1. `manifest.json`의 `dependencies`에 다음 내용을 추가:
+1. Unity 프로젝트의 `Packages/manifest.json`을 편집하여 `scopedRegistries` 섹션을 추가하세요:
+   ```json
+   {
+     "scopedRegistries": [
+       {
+         "name": "GameFrameX",
+         "url": "https://gameframex.upm.alianblank.uk",
+         "scopes": [
+           "com.gameframex"
+         ]
+       }
+     ],
+     "dependencies": {
+       "com.gameframex.unity.event": "1.1.1"
+     }
+   }
+   ```
+
+   `scopes`는 이 레지스트리를 통해 어떤 패키지를 해석할지 제어합니다. `com.gameframex`로 시작하는 패키지만 이 레지스트리에서 가져옵니다.
+
+2. `manifest.json`의 `dependencies`에 다음 내용을 추가:
    ```json
    {
       "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
    }
    ```
-2. Unity의 `Packages Manager`에서 `Git URL`을 사용하여 추가: `https://github.com/AlianBlank/com.gameframex.unity.event.git`
-3. 저장소를 직접 다운로드하여 Unity 프로젝트의 `Packages` 디렉토리에 배치하면 자동으로 로드됩니다.
+3. Unity의 `Packages Manager`에서 `Git URL`을 사용하여 추가: `https://github.com/AlianBlank/com.gameframex.unity.event.git`
+4. 저장소를 직접 다운로드하여 Unity 프로젝트의 `Packages` 디렉토리에 배치하면 자동으로 로드됩니다.
 
 ## 사용 예시
 
-### 이벤트 수 및 핸들러 수 가져오기
+### 커스텀 이벤트 정의
 
 ```csharp
-int eventHandlerCount = eventComponent.EventHandlerCount;
-int eventCount = eventComponent.EventCount;
+public class LevelUpEventArgs : GameEventArgs
+{
+    public override string Id => "level_up";
+    public int Level { get; private set; }
+
+    public static LevelUpEventArgs Create(int level)
+    {
+        var args = ReferencePool.Acquire<LevelUpEventArgs>();
+        args.Level = level;
+        return args;
+    }
+
+    public override void Clear()
+    {
+        base.Clear();
+        Level = 0;
+    }
+}
 ```
 
-### 이벤트 구독
+### 구독 / 구독 해제
 
 ```csharp
-eventComponent.Subscribe("game_start", OnGameStart);
+eventComponent.Subscribe("level_up", OnLevelUp);
+eventComponent.Unsubscribe("level_up", OnLevelUp);
+
+void OnLevelUp(object sender, GameEventArgs e)
+{
+    var args = (LevelUpEventArgs)e;
+    Debug.Log($"레벨 {args.Level}(으)로 업");
+}
 ```
 
-`OnGameStart`는 `EventHandler<GameEventArgs>` 대리자를 따르는 메서드입니다.
-
-### 이벤트 구독 해제
+### 확인 / 확인 후 구독
 
 ```csharp
-eventComponent.Unsubscribe("game_start", OnGameStart);
+// 이미 구독되어 있는지 확인
+bool exists = eventComponent.Check("level_up", OnLevelUp);
+
+// 미등록 시에만 구독
+eventComponent.CheckSubscribe("level_up", OnLevelUp);
 ```
 
 ### 이벤트 발생
 
-스레드 안전 (다음 프레임에 디스패치):
+지연 모드 (스레드 안전, 다음 프레임 메인 스레드 콜백):
 
 ```csharp
-eventComponent.Fire(this, new GameEventArgs());
+eventComponent.Fire(this, LevelUpEventArgs.Create(5));
 ```
 
-즉시 (즉시 디스패치):
+즉시 모드 (즉시 디스패치, 메인 스레드 전용):
 
 ```csharp
-eventComponent.FireNow(this, new GameEventArgs());
+eventComponent.FireNow(this, LevelUpEventArgs.Create(5));
 ```
 
-### 기본 핸들러 설정
+단축 방식 (커스텀 이벤트 인수 없이):
+
+```csharp
+eventComponent.Fire(this, "level_up");
+```
+
+### 기본 핸들러
 
 ```csharp
 eventComponent.SetDefaultHandler(OnDefaultEvent);
+
+void OnDefaultEvent(object sender, GameEventArgs e)
+{
+    Debug.Log($"처리되지 않은 이벤트: {e.Id}");
+}
 ```
 
-`OnDefaultEvent`는 `EventHandler<GameEventArgs>` 대리자를 따르는 메서드입니다.
+### 통계
+
+```csharp
+int totalHandlers = eventComponent.EventHandlerCount;
+int totalEvents = eventComponent.EventCount;
+int handlersForEvent = eventComponent.Count("level_up");
+```
 
 ## 문서 및 자료
 
@@ -101,4 +166,4 @@ eventComponent.SetDefaultHandler(OnDefaultEvent);
 
 ## 라이선스
 
-이 프로젝트는 [MIT 라이선스](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE)에 따라 배포됩니다.
+이 프로젝트는 [Apache License 2.0](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE)에 따라 배포됩니다.

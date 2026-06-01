@@ -18,74 +18,139 @@
 
 ---
 
-## プロジェクト概要
+## 概要
 
-**Event ゲームイベントシステムコンポーネント (Event Component)** - ゲームイベントのサブスクライブとディスパッチを管理するインターフェースを提供します。
+文字列 ID ベースのイベントバス。スレッドセーフな遅延ディスパッチ（`Fire` — 次フレームでメインスレッド呼び出し）と即時ディスパッチ（`FireNow`）をサポートし、未購読イベントのデフォルトハンドラを設定できます。
 
 ### 機能
 
-- **イベントのサブスクライブとサブスクライブ解除：** イベントIDに基づいてイベントハンドラコールバックをサブスクライブまたはサブスクライブ解除します。
-- **イベントのディスパッチ：** スレッドセーフなディスパッチメソッド `Fire`（メインスレッドで呼び出されることを保証）と即時ディスパッチメソッド `FireNow` を提供します。
-- **ハンドラ統計：** サブスクライブ済みのイベントハンドラ数とイベント数を取得します。
-- **デフォルトハンドラ：** 明示的にサブスクライブされていないイベントをキャッチするデフォルトイベントハンドラを設定します。
+- 文字列 ID によるイベントのサブスクライブ / サブスクライブ解除
+- `Fire` — スレッドセーフな遅延ディスパッチ（次フレーム、メインスレッド）
+- `FireNow` — 即時同期ディスパッチ
+- `Fire(sender, eventId)` — カスタムイベント引数不要のショートカット
+- `Check` / `CheckSubscribe` — 存在確認または未登録時の自動サブスクライブ
+- `Count` / `EventHandlerCount` / `EventCount` — ハンドラ統計
+- 未購読イベントのデフォルトハンドラフォールバック
 
 ## クイックスタート
 
 ### インストール方法（いずれかを選択）
 
-1. `manifest.json` の `dependencies` に以下を追加：
+1. Unity プロジェクトの `Packages/manifest.json` を編集し、`scopedRegistries` セクションを追加してください：
+   ```json
+   {
+     "scopedRegistries": [
+       {
+         "name": "GameFrameX",
+         "url": "https://gameframex.upm.alianblank.uk",
+         "scopes": [
+           "com.gameframex"
+         ]
+       }
+     ],
+     "dependencies": {
+       "com.gameframex.unity.event": "1.1.1"
+     }
+   }
+   ```
+
+   `scopes` は、どのパッケージをこのレジストリから解決するかを制御します。`com.gameframex` で始まるパッケージのみがこのレジストリから取得されます。
+
+2. `manifest.json` の `dependencies` に以下を追加：
    ```json
    {
       "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
    }
    ```
-2. Unity の `Packages Manager` で `Git URL` を使用して追加：`https://github.com/AlianBlank/com.gameframex.unity.event.git`
-3. リポジトリを直接ダウンロードして Unity プロジェクトの `Packages` ディレクトリに配置すると、自動的に読み込まれます。
+3. Unity の `Packages Manager` で `Git URL` を使用して追加：`https://github.com/AlianBlank/com.gameframex.unity.event.git`
+4. リポジトリを直接ダウンロードして Unity プロジェクトの `Packages` ディレクトリに配置すると、自動的に読み込まれます。
 
 ## 使用例
 
-### イベント数とハンドラ数の取得
+### カスタムイベントの定義
 
 ```csharp
-int eventHandlerCount = eventComponent.EventHandlerCount;
-int eventCount = eventComponent.EventCount;
+public class LevelUpEventArgs : GameEventArgs
+{
+    public override string Id => "level_up";
+    public int Level { get; private set; }
+
+    public static LevelUpEventArgs Create(int level)
+    {
+        var args = ReferencePool.Acquire<LevelUpEventArgs>();
+        args.Level = level;
+        return args;
+    }
+
+    public override void Clear()
+    {
+        base.Clear();
+        Level = 0;
+    }
+}
 ```
 
-### イベントのサブスクライブ
+### サブスクライブ / サブスクライブ解除
 
 ```csharp
-eventComponent.Subscribe("game_start", OnGameStart);
+eventComponent.Subscribe("level_up", OnLevelUp);
+eventComponent.Unsubscribe("level_up", OnLevelUp);
+
+void OnLevelUp(object sender, GameEventArgs e)
+{
+    var args = (LevelUpEventArgs)e;
+    Debug.Log($"レベル {args.Level} にアップ");
+}
 ```
 
-`OnGameStart` は `EventHandler<GameEventArgs>` デリゲートに従うメソッドです。
-
-### イベントのサブスクライブ解除
+### 確認 / 確認してサブスクライブ
 
 ```csharp
-eventComponent.Unsubscribe("game_start", OnGameStart);
+// サブスクライブ済みか確認
+bool exists = eventComponent.Check("level_up", OnLevelUp);
+
+// 未登録の場合のみサブスクライブ
+eventComponent.CheckSubscribe("level_up", OnLevelUp);
 ```
 
 ### イベントの発火
 
-スレッドセーフ（次フレームでディスパッチ）：
+遅延モード（スレッドセーフ、次フレームでメインスレッド呼び出し）：
 
 ```csharp
-eventComponent.Fire(this, new GameEventArgs());
+eventComponent.Fire(this, LevelUpEventArgs.Create(5));
 ```
 
-即時（すぐにディスパッチ）：
+即時モード（すぐにディスパッチ、メインスレッドのみ）：
 
 ```csharp
-eventComponent.FireNow(this, new GameEventArgs());
+eventComponent.FireNow(this, LevelUpEventArgs.Create(5));
 ```
 
-### デフォルトハンドラの設定
+ショートカット（カスタムイベント引数不要）：
+
+```csharp
+eventComponent.Fire(this, "level_up");
+```
+
+### デフォルトハンドラ
 
 ```csharp
 eventComponent.SetDefaultHandler(OnDefaultEvent);
+
+void OnDefaultEvent(object sender, GameEventArgs e)
+{
+    Debug.Log($"未処理のイベント: {e.Id}");
+}
 ```
 
-`OnDefaultEvent` は `EventHandler<GameEventArgs>` デリゲートに従うメソッドです。
+### 統計情報
+
+```csharp
+int totalHandlers = eventComponent.EventHandlerCount;
+int totalEvents = eventComponent.EventCount;
+int handlersForEvent = eventComponent.Count("level_up");
+```
 
 ## ドキュメントとリソース
 
@@ -101,4 +166,4 @@ eventComponent.SetDefaultHandler(OnDefaultEvent);
 
 ## ライセンス
 
-このプロジェクトは [MIT ライセンス](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE) の下で公開されています。
+このプロジェクトは [Apache License 2.0](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE) の下で公開されています。

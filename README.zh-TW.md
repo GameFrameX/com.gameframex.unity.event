@@ -18,74 +18,139 @@
 
 ---
 
-## 項目簡介
+## 概述
 
-**Event 遊戲事件系統組件 (Event Component)** - 提供遊戲事件系統組件相關的介面，管理遊戲事件的訂閱與派發。
+基於字串 ID 的事件匯流排。支援執行緒安全的延遲分發（`Fire` — 下一幀主執行緒回呼）和立即分發（`FireNow`），可設定預設處理器兜底未訂閱事件。
 
 ### 功能
 
-- **事件訂閱與取消訂閱：** 允許根據事件ID來訂閱或取消訂閱事件處理回呼函數。
-- **事件派發：** 提供執行緒安全的事件派發方法 `Fire`，即使在非主執行緒也能保證在主執行緒回呼事件處理函數，以及立即派發的方法 `FireNow`。
-- **處理函數統計：** 可以取得目前已訂閱的事件處理函數數量和事件數量。
-- **預設事件處理函數設定：** 允許設定預設事件處理函數來捕獲未明確訂閱的事件。
+- 基於字串 ID 的事件訂閱 / 取消訂閱
+- `Fire` — 執行緒安全的延遲分發（下一幀主執行緒回呼）
+- `FireNow` — 立即同步分發
+- `Fire(sender, eventId)` — 無需自訂事件參數的快捷方式
+- `Check` / `CheckSubscribe` — 檢查存在性或不存在時自動訂閱
+- `Count` / `EventHandlerCount` / `EventCount` — 處理函數統計
+- 預設處理器兜底未訂閱事件
 
 ## 快速開始
 
 ### 安裝方式（任選其一）
 
-1. 直接在 `manifest.json` 的 `dependencies` 節點下新增以下內容：
+1. 編輯 Unity 專案的 `Packages/manifest.json`，添加 `scopedRegistries` 部分：
+   ```json
+   {
+     "scopedRegistries": [
+       {
+         "name": "GameFrameX",
+         "url": "https://gameframex.upm.alianblank.uk",
+         "scopes": [
+           "com.gameframex"
+         ]
+       }
+     ],
+     "dependencies": {
+       "com.gameframex.unity.event": "1.1.1"
+     }
+   }
+   ```
+
+   `scopes` 控制哪些套件透過此註冊表解析。只有以 `com.gameframex` 開頭的套件才會從這個註冊表取得。
+
+2. 直接在 `manifest.json` 的 `dependencies` 節點下新增以下內容：
    ```json
    {
       "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
    }
    ```
-2. 在 Unity 的 `Packages Manager` 中使用 `Git URL` 的方式新增庫，地址為：`https://github.com/AlianBlank/com.gameframex.unity.event.git`
-3. 直接下載倉庫放置到 Unity 專案的 `Packages` 目錄下，會自動載入識別。
+3. 在 Unity 的 `Packages Manager` 中使用 `Git URL` 的方式新增庫，地址為：`https://github.com/AlianBlank/com.gameframex.unity.event.git`
+4. 直接下載倉庫放置到 Unity 專案的 `Packages` 目錄下，會自動載入識別。
 
 ## 使用範例
 
-### 取得事件數量和處理函數數量
+### 定義自訂事件
 
 ```csharp
-int eventHandlerCount = eventComponent.EventHandlerCount;
-int eventCount = eventComponent.EventCount;
+public class LevelUpEventArgs : GameEventArgs
+{
+    public override string Id => "level_up";
+    public int Level { get; private set; }
+
+    public static LevelUpEventArgs Create(int level)
+    {
+        var args = ReferencePool.Acquire<LevelUpEventArgs>();
+        args.Level = level;
+        return args;
+    }
+
+    public override void Clear()
+    {
+        base.Clear();
+        Level = 0;
+    }
+}
 ```
 
-### 訂閱事件
+### 訂閱 / 取消訂閱
 
 ```csharp
-eventComponent.Subscribe("game_start", OnGameStart);
+eventComponent.Subscribe("level_up", OnLevelUp);
+eventComponent.Unsubscribe("level_up", OnLevelUp);
+
+void OnLevelUp(object sender, GameEventArgs e)
+{
+    var args = (LevelUpEventArgs)e;
+    Debug.Log($"升級到 {args.Level} 級");
+}
 ```
 
-其中 `OnGameStart` 是遵循 `EventHandler<GameEventArgs>` 委託的方法。
-
-### 取消訂閱事件
+### 檢查 / 檢查並訂閱
 
 ```csharp
-eventComponent.Unsubscribe("game_start", OnGameStart);
+// 檢查是否已訂閱
+bool exists = eventComponent.Check("level_up", OnLevelUp);
+
+// 不存在時自動訂閱
+eventComponent.CheckSubscribe("level_up", OnLevelUp);
 ```
 
 ### 派發事件
 
-執行緒安全方式（下一幀派發）：
+延遲模式（執行緒安全，下一幀主執行緒回呼）：
 
 ```csharp
-eventComponent.Fire(this, new GameEventArgs());
+eventComponent.Fire(this, LevelUpEventArgs.Create(5));
 ```
 
-立即模式（立刻派發）：
+立即模式（立刻分發，僅限主執行緒）：
 
 ```csharp
-eventComponent.FireNow(this, new GameEventArgs());
+eventComponent.FireNow(this, LevelUpEventArgs.Create(5));
 ```
 
-### 設定預設事件處理函數
+快捷方式（無需自訂事件參數）：
+
+```csharp
+eventComponent.Fire(this, "level_up");
+```
+
+### 預設處理器
 
 ```csharp
 eventComponent.SetDefaultHandler(OnDefaultEvent);
+
+void OnDefaultEvent(object sender, GameEventArgs e)
+{
+    Debug.Log($"未處理的事件: {e.Id}");
+}
 ```
 
-其中 `OnDefaultEvent` 是遵循 `EventHandler<GameEventArgs>` 委託的方法。
+### 統計資訊
+
+```csharp
+int totalHandlers = eventComponent.EventHandlerCount;
+int totalEvents = eventComponent.EventCount;
+int handlersForEvent = eventComponent.Count("level_up");
+```
 
 ## 文檔與資源
 
@@ -101,4 +166,4 @@ eventComponent.SetDefaultHandler(OnDefaultEvent);
 
 ## 開源協議
 
-本專案基於 [MIT 協議](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE) 開源。
+本專案基於 [Apache License 2.0 協議](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE) 開源。
