@@ -59,10 +59,10 @@
 2. `manifest.json` の `dependencies` に以下を追加：
    ```json
    {
-      "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
+      "com.gameframex.unity.event": "https://github.com/gameframex/com.gameframex.unity.event.git"
    }
    ```
-3. Unity の `Packages Manager` で `Git URL` を使用して追加：`https://github.com/AlianBlank/com.gameframex.unity.event.git`
+3. Unity の `Packages Manager` で `Git URL` を使用して追加：`https://github.com/gameframex/com.gameframex.unity.event.git`
 4. リポジトリを直接ダウンロードして Unity プロジェクトの `Packages` ディレクトリに配置すると、自動的に読み込まれます。
 
 ## 使用例

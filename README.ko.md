@@ -59,10 +59,10 @@
 2. `manifest.json`의 `dependencies`에 다음 내용을 추가:
    ```json
    {
-      "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
+      "com.gameframex.unity.event": "https://github.com/gameframex/com.gameframex.unity.event.git"
    }
    ```
-3. Unity의 `Packages Manager`에서 `Git URL`을 사용하여 추가: `https://github.com/AlianBlank/com.gameframex.unity.event.git`
+3. Unity의 `Packages Manager`에서 `Git URL`을 사용하여 추가: `https://github.com/gameframex/com.gameframex.unity.event.git`
 4. 저장소를 직접 다운로드하여 Unity 프로젝트의 `Packages` 디렉토리에 배치하면 자동으로 로드됩니다.
 
 ## 사용 예시

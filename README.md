@@ -61,10 +61,10 @@ Choose one of the following methods:
 2. Add to `manifest.json` dependencies:
    ```json
    {
-      "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
+      "com.gameframex.unity.event": "https://github.com/gameframex/com.gameframex.unity.event.git"
    }
    ```
-3. Use **Packages Manager** in Unity with **Git URL**: `https://github.com/AlianBlank/com.gameframex.unity.event.git`
+3. Use **Packages Manager** in Unity with **Git URL**: `https://github.com/gameframex/com.gameframex.unity.event.git`
 4. Clone the repository into your Unity project's `Packages` directory. It will be loaded automatically.
 
 ## Usage

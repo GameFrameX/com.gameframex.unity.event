@@ -59,10 +59,10 @@
 2. 直接在 `manifest.json` 的 `dependencies` 節點下新增以下內容：
    ```json
    {
-      "com.gameframex.unity.event": "https://github.com/AlianBlank/com.gameframex.unity.event.git"
+      "com.gameframex.unity.event": "https://github.com/gameframex/com.gameframex.unity.event.git"
    }
    ```
-3. 在 Unity 的 `Packages Manager` 中使用 `Git URL` 的方式新增庫，地址為：`https://github.com/AlianBlank/com.gameframex.unity.event.git`
+3. 在 Unity 的 `Packages Manager` 中使用 `Git URL` 的方式新增庫，地址為：`https://github.com/gameframex/com.gameframex.unity.event.git`
 4. 直接下載倉庫放置到 Unity 專案的 `Packages` 目錄下，會自動載入識別。
 
 ## 使用範例
