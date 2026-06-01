@@ -110,28 +110,12 @@ namespace GameFrameX.Event.Runtime
         }
 
         /// <summary>
-        /// 订阅事件处理回调函数。
-        /// </summary>
-        /// <param name="id">事件类型编号。</param>
-        /// <param name="handler">要订阅的事件处理回调函数。</param>
-        [Obsolete("Use CheckSubscribe instead.")]
-        public void Subscribe(string id, EventHandler<GameEventArgs> handler)
-        {
-            m_EventManager.Subscribe(id, handler);
-        }
-
-        /// <summary>
         /// 取消订阅事件处理回调函数。
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要取消订阅的事件处理回调函数。</param>
         public void Unsubscribe(string id, EventHandler<GameEventArgs> handler)
         {
-            if (!Check(id, handler))
-            {
-                return;
-            }
-
             m_EventManager.Unsubscribe(id, handler);
         }
 
