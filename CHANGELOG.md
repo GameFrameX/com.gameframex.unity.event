@@ -1,3 +1,16 @@
+## [1.1.2](https://github.com/gameframex/com.gameframex.unity.event/compare/1.1.1...1.1.2) (2026-06-01)
+
+
+### Bug Fixes
+
+* **event:** EmptyEventArgs.Clear() 重置 _eventId ([ad5ef26](https://github.com/gameframex/com.gameframex.unity.event/commit/ad5ef26492ef4fcef606d7649ac5a465506c1d40))
+* **event:** 更新 AddComponentMenu 路径 ([322a2f5](https://github.com/gameframex/com.gameframex.unity.event/commit/322a2f5093dc5b4cb650ffb268e6ff7c606601d3))
+
+
+### Performance Improvements
+
+* **event:** CroppingHelper 改用 discard 模式 ([10b82e7](https://github.com/gameframex/com.gameframex.unity.event/commit/10b82e77f56bfb0acd61c4c835eaa339a1733d45))
+
 ## [1.1.1](https://github.com/gameframex/com.gameframex.unity.event/compare/1.1.0...1.1.1) (2026-05-28)
 
 
