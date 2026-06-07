@@ -20,6 +20,7 @@
 [English](README.md) | **简体中文** | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
 </div>
+
 ## 概述
 
 基于字符串 ID 的事件总线。支持线程安全的延迟分发（`Fire` — 下一帧主线程回调）和立即分发（`FireNow`），可设置默认处理器兜底未订阅事件。

@@ -20,6 +20,7 @@
 [English](README.md) | [简体中文](README.zh-CN.md) | **繁體中文** | [日本語](README.ja.md) | [한국어](README.ko.md)
 
 </div>
+
 ## 概述
 
 基於字串 ID 的事件匯流排。支援執行緒安全的延遲分發（`Fire` — 下一幀主執行緒回呼）和立即分發（`FireNow`），可設定預設處理器兜底未訂閱事件。
