@@ -169,4 +169,4 @@ int handlersForEvent = eventComponent.Count("level_up");
 
 ## 开源协议
 
-本项目基于 [Apache License 2.0 协议](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE) 开源。
+详见 [LICENSE.md](LICENSE.md) 文件。

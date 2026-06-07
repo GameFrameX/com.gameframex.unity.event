@@ -171,4 +171,4 @@ See [Releases](https://github.com/gameframex/com.gameframex.unity.event/releases
 
 ## License
 
-This project is licensed under the [Apache License 2.0](https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE).
+See [LICENSE.md](LICENSE.md) for license information.
