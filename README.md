@@ -12,7 +12,7 @@ All-in-One Solution for Indie Game Development · Empowering Indie Developers' D
 
 <br />
 
-[Documentation](https://gameframex.doc.alianblank.com) · [Quick Start](#quick-start) · [QQ Group](https://qm.qq.com/q/5kbDVBdUeS)
+[Documentation](https://gameframex.doc.alianblank.com) · [Quick Start](#quick-start) · QQ Group: 467608841 / 233840761
 
 <br />
 
@@ -161,7 +161,7 @@ int handlersForEvent = eventComponent.Count("level_up");
 
 ## Community
 
-- [QQ Group](https://qm.qq.com/q/5kbDVBdUeS)
+- QQ Group: 467608841 / 233840761
 
 ## Changelog
 
