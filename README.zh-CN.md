@@ -21,7 +21,7 @@
 
 </div>
 
-## 概述
+## 项目简介
 
 基于字符串 ID 的事件总线。支持线程安全的延迟分发（`Fire` — 下一帧主线程回调）和立即分发（`FireNow`），可设置默认处理器兜底未订阅事件。
 
@@ -166,6 +166,13 @@ int handlersForEvent = eventComponent.Count("level_up");
 ## 更新日志
 
 查看 [Releases](https://github.com/gameframex/com.gameframex.unity.event/releases) 了解更新日志。
+
+
+## 依赖
+
+| 包 | 说明 |
+|----|------|
+| (无) | - |
 
 ## 开源协议
 

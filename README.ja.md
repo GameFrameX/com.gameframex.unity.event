@@ -21,7 +21,7 @@
 
 </div>
 
-## 概要
+## プロジェクト概要
 
 文字列 ID ベースのイベントバス。スレッドセーフな遅延ディスパッチ（`Fire` — 次フレームでメインスレッド呼び出し）と即時ディスパッチ（`FireNow`）をサポートし、未購読イベントのデフォルトハンドラを設定できます。
 
@@ -166,6 +166,13 @@ int handlersForEvent = eventComponent.Count("level_up");
 ## 変更履歴
 
 変更履歴は [Releases](https://github.com/gameframex/com.gameframex.unity.event/releases) をご覧ください。
+
+
+## 依存関係
+
+| パッケージ | 説明 |
+|----------|------|
+| (无) | - |
 
 ## ライセンス
 

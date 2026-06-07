@@ -21,7 +21,7 @@ All-in-One Solution for Indie Game Development · Empowering Indie Developers' D
 
 </div>
 
-## Overview
+## Project Overview
 
 Type-identified event bus for Unity. Subscribe handlers by string ID, dispatch thread-safely from any thread (`Fire` — next frame on main thread) or immediately (`FireNow`), and set a default handler for unhandled events.
 
@@ -70,7 +70,7 @@ Choose one of the following methods:
 3. Use **Packages Manager** in Unity with **Git URL**: `https://github.com/gameframex/com.gameframex.unity.event.git`
 4. Clone the repository into your Unity project's `Packages` directory. It will be loaded automatically.
 
-## Usage
+## Usage Examples
 
 ### Define a Custom Event
 
@@ -157,17 +157,24 @@ int totalEvents = eventComponent.EventCount;
 int handlersForEvent = eventComponent.Count("level_up");
 ```
 
-## Documentation
+## Documentation & Resources
 
 - [Documentation](https://gameframex.doc.alianblank.com)
 
-## Community
+## Community & Support
 
 - QQ Group: 467608841 / 233840761
 
 ## Changelog
 
 See [Releases](https://github.com/gameframex/com.gameframex.unity.event/releases) for changelog.
+
+
+## Dependencies
+
+| Package | Description |
+|---------|-------------|
+| (无) | - |
 
 ## License
 

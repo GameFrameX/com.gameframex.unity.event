@@ -21,7 +21,7 @@
 
 </div>
 
-## 개요
+## 프로젝트 개요
 
 문자열 ID 기반 이벤트 버스. 스레드 안전한 지연 디스패치(`Fire` — 다음 프레임 메인 스레드 콜백)와 즉시 디스패치(`FireNow`)를 지원하며, 구독되지 않은 이벤트에 대한 기본 핸들러를 설정할 수 있습니다.
 
@@ -166,6 +166,13 @@ int handlersForEvent = eventComponent.Count("level_up");
 ## 변경 로그
 
 변경 로그는 [Releases](https://github.com/gameframex/com.gameframex.unity.event/releases)에서 확인하세요.
+
+
+## 의존성
+
+| 패키지 | 설명 |
+|--------|------|
+| (无) | - |
 
 ## 라이선스
 

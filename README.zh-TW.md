@@ -21,7 +21,7 @@
 
 </div>
 
-## 概述
+## 項目簡介
 
 基於字串 ID 的事件匯流排。支援執行緒安全的延遲分發（`Fire` — 下一幀主執行緒回呼）和立即分發（`FireNow`），可設定預設處理器兜底未訂閱事件。
 
@@ -166,6 +166,13 @@ int handlersForEvent = eventComponent.Count("level_up");
 ## 更新日誌
 
 查看 [Releases](https://github.com/gameframex/com.gameframex.unity.event/releases) 了解更新日誌。
+
+
+## 依賴
+
+| 套件 | 說明 |
+|------|------|
+| (无) | - |
 
 ## 開源協議
 
