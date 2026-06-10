@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.1.2...1.2.0) (2026-06-10)
+
+
+### Features
+
+* **event:** 添加 CheckUnsubscribe 安全取消订阅方法 ([1df67b3](https://github.com/gameframex/com.gameframex.unity.event/commit/1df67b3ebd7082e2a26cf9cf5c4d740faa9525af))
+
 ## [1.1.2](https://github.com/gameframex/com.gameframex.unity.event/compare/1.1.1...1.1.2) (2026-06-01)
 
 
