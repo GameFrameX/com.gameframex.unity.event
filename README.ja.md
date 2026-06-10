@@ -31,7 +31,7 @@
 - `Fire` — スレッドセーフな遅延ディスパッチ（次フレーム、メインスレッド）
 - `FireNow` — 即時同期ディスパッチ
 - `Fire(sender, eventId)` — カスタムイベント引数不要のショートカット
-- `Check` / `CheckSubscribe` — 存在確認または未登録時の自動サブスクライブ
+- `Check` / `CheckSubscribe` / `CheckUnsubscribe` — 存在確認、未登録時の自動サブスクライブ、登録時の安全なサブスクライブ解除
 - `Count` / `EventHandlerCount` / `EventCount` — ハンドラ統計
 - 未購読イベントのデフォルトハンドラフォールバック
 
@@ -147,6 +147,9 @@ bool exists = eventComponent.Check("level_up", OnLevelUp);
 
 // 未登録の場合のみサブスクライブ
 eventComponent.CheckSubscribe("level_up", OnLevelUp);
+
+// 登録済みの場合のみサブスクライブ解除
+eventComponent.CheckUnsubscribe("level_up", OnLevelUp);
 ```
 
 ### イベントの発火

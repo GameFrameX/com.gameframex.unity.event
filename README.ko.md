@@ -31,7 +31,7 @@
 - `Fire` — 스레드 안전한 지연 디스패치 (다음 프레임, 메인 스레드)
 - `FireNow` — 즉시 동기 디스패치
 - `Fire(sender, eventId)` — 커스텀 이벤트 인수 없이 사용하는 단축 방식
-- `Check` / `CheckSubscribe` — 존재 확인 또는 미등록 시 자동 구독
+- `Check` / `CheckSubscribe` / `CheckUnsubscribe` — 존재 확인, 미등록 시 자동 구독, 등록 시 안전 구독 해제
 - `Count` / `EventHandlerCount` / `EventCount` — 핸들러 통계
 - 구독되지 않은 이벤트에 대한 기본 핸들러 폴백
 
@@ -147,6 +147,9 @@ bool exists = eventComponent.Check("level_up", OnLevelUp);
 
 // 미등록 시에만 구독
 eventComponent.CheckSubscribe("level_up", OnLevelUp);
+
+// 등록된 경우에만 구독 해제
+eventComponent.CheckUnsubscribe("level_up", OnLevelUp);
 ```
 
 ### 이벤트 발생

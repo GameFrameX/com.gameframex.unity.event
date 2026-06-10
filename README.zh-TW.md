@@ -31,7 +31,7 @@
 - `Fire` — 執行緒安全的延遲分發（下一幀主執行緒回呼）
 - `FireNow` — 立即同步分發
 - `Fire(sender, eventId)` — 無需自訂事件參數的快捷方式
-- `Check` / `CheckSubscribe` — 檢查存在性或不存在時自動訂閱
+- `Check` / `CheckSubscribe` / `CheckUnsubscribe` — 檢查存在性、不存在時自動訂閱、存在時安全取消訂閱
 - `Count` / `EventHandlerCount` / `EventCount` — 處理函數統計
 - 預設處理器兜底未訂閱事件
 
@@ -114,6 +114,9 @@ bool exists = eventComponent.Check("level_up", OnLevelUp);
 
 // 不存在時自動訂閱
 eventComponent.CheckSubscribe("level_up", OnLevelUp);
+
+// 存在時安全取消訂閱
+eventComponent.CheckUnsubscribe("level_up", OnLevelUp);
 ```
 
 ### 派發事件

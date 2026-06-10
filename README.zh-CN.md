@@ -31,7 +31,7 @@
 - `Fire` — 线程安全的延迟分发（下一帧主线程回调）
 - `FireNow` — 立即同步分发
 - `Fire(sender, eventId)` — 无需自定义事件参数的快捷方式
-- `Check` / `CheckSubscribe` — 检查存在性或不存在时自动订阅
+- `Check` / `CheckSubscribe` / `CheckUnsubscribe` — 检查存在性、不存在时自动订阅、存在时安全取消订阅
 - `Count` / `EventHandlerCount` / `EventCount` — 处理函数统计
 - 默认处理器兜底未订阅事件
 
@@ -114,6 +114,9 @@ bool exists = eventComponent.Check("level_up", OnLevelUp);
 
 // 不存在时自动订阅
 eventComponent.CheckSubscribe("level_up", OnLevelUp);
+
+// 存在时安全取消订阅
+eventComponent.CheckUnsubscribe("level_up", OnLevelUp);
 ```
 
 ### 抛出事件

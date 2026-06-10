@@ -31,7 +31,7 @@ Type-identified event bus for Unity. Subscribe handlers by string ID, dispatch t
 - `Fire` — thread-safe deferred dispatch (next frame, main thread)
 - `FireNow` — immediate synchronous dispatch
 - `Fire(sender, eventId)` — shorthand without custom event args
-- `Check` / `CheckSubscribe` — check existence or subscribe-if-absent
+- `Check` / `CheckSubscribe` / `CheckUnsubscribe` — check existence, subscribe-if-absent, or unsubscribe-if-exists
 - `Count` / `EventHandlerCount` / `EventCount` — handler statistics
 - Default handler fallback for unhandled events
 
@@ -116,6 +116,9 @@ bool exists = eventComponent.Check("level_up", OnLevelUp);
 
 // Subscribe only if not already subscribed
 eventComponent.CheckSubscribe("level_up", OnLevelUp);
+
+// Unsubscribe only if already subscribed
+eventComponent.CheckUnsubscribe("level_up", OnLevelUp);
 ```
 
 ### Fire an Event
