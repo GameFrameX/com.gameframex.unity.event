@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.2.0...1.3.0) (2026-07-03)
+
+
+### Features
+
+* **event:** 为 EventComponent 添加自动注册特性 ([c5e9238](https://github.com/gameframex/com.gameframex.unity.event/commit/c5e92388062096b5b6562a5b6c9f6bf0b3fcbf6f))
+
 # [1.2.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.1.2...1.2.0) (2026-06-10)
 
 
