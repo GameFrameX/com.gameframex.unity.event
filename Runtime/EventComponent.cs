@@ -39,6 +39,7 @@ namespace GameFrameX.Event.Runtime
     [DisallowMultipleComponent]
     [AddComponentMenu("GameFrameX/Event")]
     [UnityEngine.Scripting.Preserve]
+    [GameFrameXAutoComponent(-7000)]
     public sealed class EventComponent : GameFrameworkComponent
     {
         private IEventManager m_EventManager = null;
