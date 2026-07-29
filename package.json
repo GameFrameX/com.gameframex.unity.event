@@ -22,7 +22,9 @@
   "documentationUrl": "https://gameframex.doc.alianblank.com",
   "changelogUrl": "https://github.com/gameframex/com.gameframex.unity.event/blob/main/CHANGELOG.md",
   "licensesUrl": "https://github.com/gameframex/com.gameframex.unity.event/blob/main/LICENSE.md",
-  "dependencies": {},
+  "dependencies": {
+    "com.gameframex.unity": "2.5.1"
+  },
   "devDependencies": {
     "semantic-release": "^24.2.0",
     "@semantic-release/changelog": "^6.0.3",
