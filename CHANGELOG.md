@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.3.0...1.4.0) (2026-07-29)
+
+
+### Features
+
+* **package:** 添加对 com.gameframex.unity 2.5.1 的依赖 ([920a5ff](https://github.com/gameframex/com.gameframex.unity.event/commit/920a5ff072f7a1d3e4f3169849b03c5ffba45cb2))
+
 # [1.3.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.2.0...1.3.0) (2026-07-03)
 
 
