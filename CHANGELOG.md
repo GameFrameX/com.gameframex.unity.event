@@ -1,3 +1,13 @@
+# [2.0.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.4.0...2.0.0) (2026-10-15)
+
+
+* feat(module)!: 事件模块薄入口化并迁移接口契约 ([05ebba6](https://github.com/gameframex/com.gameframex.unity.event/commit/05ebba6107f0ded26617233d6aed9ab2051992a8))
+
+
+### BREAKING CHANGES
+
+* EventComponent 序列化字段移除，编辑期配置入口收敛到代码 Options，Play 期经活视图/模块 API 调整；模块契约全接口化。
+
 ## [Unreleased]
 
 ### ⚠ BREAKING CHANGES
