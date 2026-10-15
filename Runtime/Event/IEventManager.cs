@@ -97,6 +97,20 @@ namespace GameFrameX.Event.Runtime
         void Fire(object sender, GameEventArgs e);
 
         /// <summary>
+        /// 检查订阅事件处理回调函数，当不存在时自动订阅。
+        /// </summary>
+        /// <param name="id">事件类型编号。</param>
+        /// <param name="handler">要订阅的事件处理回调函数。</param>
+        void CheckSubscribe(string id, EventHandler<GameEventArgs> handler);
+
+        /// <summary>
+        /// 按事件编号抛出空参数事件（等价于 <see cref="Fire(object, GameEventArgs)"/> 携带 <see cref="EmptyEventArgs"/>）。
+        /// </summary>
+        /// <param name="sender">事件源。</param>
+        /// <param name="eventId">事件编号。</param>
+        void Fire(object sender, string eventId);
+
+        /// <summary>
         /// 抛出事件立即模式，这个操作不是线程安全的，事件会立刻分发。
         /// </summary>
         /// <param name="sender">事件源。</param>

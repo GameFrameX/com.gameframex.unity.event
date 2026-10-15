@@ -1,4 +1,4 @@
-﻿// ==========================================================================================
+// ==========================================================================================
 //   GameFrameX 组织及其衍生项目的版权、商标、专利及其他相关权利
 //   GameFrameX organization and its derivative projects' copyrights, trademarks, patents, and related rights
 //   均受中华人民共和国及相关国际法律法规保护。
@@ -36,13 +36,14 @@ namespace GameFrameX.Event.Runtime
     /// 事件管理器。
     /// </summary>
     [UnityEngine.Scripting.Preserve]
-    public sealed class EventManager : GameFrameworkModule, IEventManager
+    public sealed class EventManager : IGameFrameworkModule, IEventManager, IUpdatableModule, IShutdownableModule, IPrioritizedModule
     {
         private readonly EventPool<GameEventArgs> m_EventPool;
 
         /// <summary>
         /// 初始化事件管理器的新实例。
         /// </summary>
+        [UnityEngine.Scripting.Preserve]
         public EventManager()
         {
             m_EventPool = new EventPool<GameEventArgs>(EventPoolMode.AllowNoHandler | EventPoolMode.AllowMultiHandler);
@@ -51,6 +52,7 @@ namespace GameFrameX.Event.Runtime
         /// <summary>
         /// 获取事件处理函数的数量。
         /// </summary>
+        [UnityEngine.Scripting.Preserve]
         public int EventHandlerCount
         {
             get { return m_EventPool.EventHandlerCount; }
@@ -59,6 +61,7 @@ namespace GameFrameX.Event.Runtime
         /// <summary>
         /// 获取事件数量。
         /// </summary>
+        [UnityEngine.Scripting.Preserve]
         public int EventCount
         {
             get { return m_EventPool.EventCount; }
@@ -68,7 +71,8 @@ namespace GameFrameX.Event.Runtime
         /// 获取游戏框架模块优先级。
         /// </summary>
         /// <remarks>优先级较高的模块会优先轮询，并且关闭操作会后进行。</remarks>
-        protected override int Priority
+        [UnityEngine.Scripting.Preserve]
+        public int Priority
         {
             get { return 7; }
         }
@@ -78,7 +82,8 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        protected override void Update(float elapseSeconds, float realElapseSeconds)
+        [UnityEngine.Scripting.Preserve]
+        public void Update(float elapseSeconds, float realElapseSeconds)
         {
             m_EventPool.Update(elapseSeconds, realElapseSeconds);
         }
@@ -86,7 +91,8 @@ namespace GameFrameX.Event.Runtime
         /// <summary>
         /// 关闭并清理事件管理器。
         /// </summary>
-        protected override void Shutdown()
+        [UnityEngine.Scripting.Preserve]
+        public void Shutdown()
         {
             m_EventPool.Shutdown();
         }
@@ -96,6 +102,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <returns>事件处理函数的数量。</returns>
+        [UnityEngine.Scripting.Preserve]
         public int Count(string id)
         {
             return m_EventPool.Count(id);
@@ -107,6 +114,7 @@ namespace GameFrameX.Event.Runtime
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要检查的事件处理函数。</param>
         /// <returns>是否存在事件处理函数。</returns>
+        [UnityEngine.Scripting.Preserve]
         public bool Check(string id, EventHandler<GameEventArgs> handler)
         {
             return m_EventPool.Check(id, handler);
@@ -117,6 +125,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要订阅的事件处理函数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void Subscribe(string id, EventHandler<GameEventArgs> handler)
         {
             m_EventPool.Subscribe(id, handler);
@@ -127,6 +136,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要取消订阅的事件处理函数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void Unsubscribe(string id, EventHandler<GameEventArgs> handler)
         {
             m_EventPool.Unsubscribe(id, handler);
@@ -137,6 +147,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要取消订阅的事件处理函数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void CheckUnsubscribe(string id, EventHandler<GameEventArgs> handler)
         {
             if (m_EventPool.Check(id, handler))
@@ -149,6 +160,7 @@ namespace GameFrameX.Event.Runtime
         /// 设置默认事件处理函数。
         /// </summary>
         /// <param name="handler">要设置的默认事件处理函数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void SetDefaultHandler(EventHandler<GameEventArgs> handler)
         {
             m_EventPool.SetDefaultHandler(handler);
@@ -159,9 +171,36 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">事件参数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void Fire(object sender, GameEventArgs e)
         {
             m_EventPool.Fire(sender, e);
+        }
+
+        /// <summary>
+        /// 检查订阅事件处理回调函数，当不存在时自动订阅（原 EventComponent 组合逻辑，C9 组件移除后归位模块）。
+        /// </summary>
+        /// <param name="id">事件类型编号。</param>
+        /// <param name="handler">要订阅的事件处理回调函数。</param>
+        [UnityEngine.Scripting.Preserve]
+        public void CheckSubscribe(string id, EventHandler<GameEventArgs> handler)
+        {
+            if (!Check(id, handler))
+            {
+                m_EventPool.Subscribe(id, handler);
+            }
+        }
+
+        /// <summary>
+        /// 按事件编号抛出空参数事件（原 EventComponent 组合逻辑，C9 组件移除后归位模块）。
+        /// </summary>
+        /// <param name="sender">事件源。</param>
+        /// <param name="eventId">事件编号。</param>
+        [UnityEngine.Scripting.Preserve]
+        public void Fire(object sender, string eventId)
+        {
+            GameFrameworkGuard.NotNullOrEmpty(eventId, nameof(eventId));
+            m_EventPool.Fire(sender, EmptyEventArgs.Create(eventId));
         }
 
         /// <summary>
@@ -169,6 +208,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">事件参数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void FireNow(object sender, GameEventArgs e)
         {
             m_EventPool.FireNow(sender, e);

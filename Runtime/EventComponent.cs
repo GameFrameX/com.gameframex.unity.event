@@ -47,6 +47,7 @@ namespace GameFrameX.Event.Runtime
         /// <summary>
         /// 获取事件处理函数的数量。
         /// </summary>
+        [UnityEngine.Scripting.Preserve]
         public int EventHandlerCount
         {
             get { return m_EventManager.EventHandlerCount; }
@@ -55,6 +56,7 @@ namespace GameFrameX.Event.Runtime
         /// <summary>
         /// 获取事件数量。
         /// </summary>
+        [UnityEngine.Scripting.Preserve]
         public int EventCount
         {
             get { return m_EventManager.EventCount; }
@@ -81,6 +83,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <returns>事件处理函数的数量。</returns>
+        [UnityEngine.Scripting.Preserve]
         public int Count(string id)
         {
             return m_EventManager.Count(id);
@@ -92,6 +95,7 @@ namespace GameFrameX.Event.Runtime
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要检查的事件处理函数。</param>
         /// <returns>是否存在事件处理函数。</returns>
+        [UnityEngine.Scripting.Preserve]
         public bool Check(string id, EventHandler<GameEventArgs> handler)
         {
             return m_EventManager.Check(id, handler);
@@ -102,12 +106,10 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要订阅的事件处理回调函数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void CheckSubscribe(string id, EventHandler<GameEventArgs> handler)
         {
-            if (!Check(id, handler))
-            {
-                m_EventManager.Subscribe(id, handler);
-            }
+            m_EventManager.CheckSubscribe(id, handler);
         }
 
         /// <summary>
@@ -115,6 +117,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要取消订阅的事件处理回调函数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void Unsubscribe(string id, EventHandler<GameEventArgs> handler)
         {
             m_EventManager.Unsubscribe(id, handler);
@@ -125,6 +128,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要取消订阅的事件处理回调函数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void CheckUnsubscribe(string id, EventHandler<GameEventArgs> handler)
         {
             m_EventManager.CheckUnsubscribe(id, handler);
@@ -134,6 +138,7 @@ namespace GameFrameX.Event.Runtime
         /// 设置默认事件处理函数。
         /// </summary>
         /// <param name="handler">要设置的默认事件处理函数。</param>
+        [UnityEngine.Scripting.Preserve]
         public void SetDefaultHandler(EventHandler<GameEventArgs> handler)
         {
             m_EventManager.SetDefaultHandler(handler);
@@ -144,6 +149,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="sender">事件发送者。</param>
         /// <param name="e">事件内容。</param>
+        [UnityEngine.Scripting.Preserve]
         public void Fire(object sender, GameEventArgs e)
         {
             m_EventManager.Fire(sender, e);
@@ -154,10 +160,10 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="sender">事件发送者。</param>
         /// <param name="eventId">事件编号。</param>
+        [UnityEngine.Scripting.Preserve]
         public void Fire(object sender, string eventId)
         {
-            GameFrameworkGuard.NotNullOrEmpty(eventId, nameof(eventId));
-            m_EventManager.Fire(sender, EmptyEventArgs.Create(eventId));
+            m_EventManager.Fire(sender, eventId);
         }
 
         /// <summary>
@@ -165,6 +171,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="sender">事件发送者。</param>
         /// <param name="e">事件内容。</param>
+        [UnityEngine.Scripting.Preserve]
         public void FireNow(object sender, GameEventArgs e)
         {
             m_EventManager.FireNow(sender, e);

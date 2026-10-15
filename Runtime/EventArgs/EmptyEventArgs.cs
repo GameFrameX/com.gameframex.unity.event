@@ -30,6 +30,7 @@ namespace GameFrameX.Event.Runtime
         /// </summary>
         /// <param name="eventId">事件编号</param>
         /// <returns>空事件对象</returns>
+        [UnityEngine.Scripting.Preserve]
         public static EmptyEventArgs Create(string eventId)
         {
             var eventArgs = ReferencePool.Acquire<EmptyEventArgs>();
