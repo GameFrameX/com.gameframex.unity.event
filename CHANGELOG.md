@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/gameframex/com.gameframex.unity.event/compare/2.0.0...2.0.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* **event:** 添加完整 link.xml 防代码裁剪保护 ([0797b3e](https://github.com/gameframex/com.gameframex.unity.event/commit/0797b3e4872800b79b4fdf4f11a6000f79b56f64))
+
 # [2.0.0](https://github.com/gameframex/com.gameframex.unity.event/compare/1.4.0...2.0.0) (2026-10-15)
 
 

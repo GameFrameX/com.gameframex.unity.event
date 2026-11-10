@@ -3,7 +3,7 @@
     "displayName": "Game Frame X Event",
     "category": "GameFrameX",
     "description": "GameFrameX Event — Unity type-identified event bus package. Supports string-ID subscribe/unsubscribe with idempotent check helpers, existence and count queries, thread-safe queued dispatching (Fire, delivered on the next main-thread module tick), immediate synchronous dispatching (FireNow), a pooled empty-args Fire overload, and a default handler fallback for unhandled events. The component stays a thin forwarding entry; the module is reachable directly via GetModule<T>() / GameApp.Event. Docs: https://gameframex.doc.alianblank.com\n\nGameFrameX Event — Unity 类型化事件总线功能包。支持基于字符串 ID 的订阅/取消订阅（含幂等 Check 订阅/退订辅助）与存在性、数量查询，线程安全的排队分发（Fire，主线程下一次模块轮询投递）、即时同步分发（FireNow）、池化空参数 Fire 重载，以及未处理事件的默认处理器兜底。组件保留为纯转发薄入口，模块可经 GetModule<T>() / GameApp.Event 直达。文档：https://gameframex.doc.alianblank.com",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "unity": "2019.4",
     "keywords": [
         "GameFrameX",
